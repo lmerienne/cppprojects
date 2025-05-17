@@ -1,0 +1,5 @@
+project(ResourceManager LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_executable(resource_manager src/main.cpp)
+target_include_directories(resource_manager PRIVATE include)
