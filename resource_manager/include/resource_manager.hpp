@@ -6,6 +6,7 @@
 #include <memory>
 #include <fstream>
 #include <stdexcept>
+#include <iostream>
 
 namespace rm
 {
@@ -15,11 +16,11 @@ namespace rm
     public:
         virtual ~Resource() noexcept = default;
         virtual std::string getInfo() const = 0;
+        virtual std::unique_ptr<Resource> clone() const = 0;
     };
 
     class FileResource : public Resource
     {
-        // TODO: Ajouter membres et méthodes
 
     private:
         std::ofstream file_;
@@ -33,6 +34,11 @@ namespace rm
             {
                 throw std::runtime_error("Could not open file: " + filename_);
             }
+        }
+
+        FileResource(const FileResource &other) : filename_(other.filename_)
+        {
+            file_.open(filename_);
         }
 
         ~FileResource() noexcept override
@@ -65,6 +71,11 @@ namespace rm
             return *this;
         }
 
+        std::unique_ptr<Resource> clone() const override
+        {
+            return std::make_unique<FileResource>(*this);
+        }
+
         std::string getInfo() const override
         {
             return "FileResource: " + filename_;
@@ -73,7 +84,39 @@ namespace rm
 
     class ResourceManager
     {
-        // TODO: Ajouter membres et méthodes
+    private:
+        std::vector<std::unique_ptr<Resource>> resources_;
+
+    public:
+        void add(Resource &resource)
+        {
+            resources_.emplace_back(resource.clone());
+        }
+
+        void add(FileResource &&resource)
+        {
+            resources_.emplace_back(std::make_unique<FileResource>(std::move(resource)));
+        }
+
+        void remove(size_t index)
+        {
+            if (index < resources_.size())
+            {
+                resources_.erase(resources_.begin() + index);
+            }
+            else
+            {
+                throw std::out_of_range("Index out of range");
+            }
+        }
+
+        void printResources()
+        {
+            for (const auto &resource : resources_)
+            {
+                std::cout << resource->getInfo() << std::endl;
+            }
+        }
     };
 
 } // namespace rm

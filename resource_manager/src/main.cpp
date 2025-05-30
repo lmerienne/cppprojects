@@ -1,13 +1,23 @@
 #include "resource_manager.hpp"
 #include <iostream>
+
 int main()
 {
     try
     {
-        rm::FileResource file1("test1.txt");
-        rm::FileResource file2 = std::move(file1); // Déplacement
-        std::cout << file2.getInfo() << "\n";
-        // Vérifiez que file1 est dans un état valide (fichier fermé)
+        rm::ResourceManager manager;
+        manager.add(rm::FileResource("test1.txt"));
+        manager.add(rm::FileResource("test2.txt"));
+        manager.remove(0);
+        manager.printResources();
+        try
+        {
+            manager.remove(10); // Doit lever une exception
+        }
+        catch (const std::out_of_range &e)
+        {
+            std::cerr << "Expected error: " << e.what() << "\n";
+        }
     }
     catch (const std::exception &e)
     {
