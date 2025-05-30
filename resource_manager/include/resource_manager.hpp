@@ -53,6 +53,7 @@ namespace rm
         {
             other.filename_.clear();
             other.file_.close();
+            
         }
 
         FileResource &operator=(FileResource &&other)
