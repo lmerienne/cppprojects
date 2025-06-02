@@ -10,7 +10,6 @@
 
 namespace rm
 {
-
     class Resource
     {
     public:
@@ -21,7 +20,7 @@ namespace rm
 
     class FileResource : public Resource
     {
-        
+
     private:
         std::ofstream file_;
         std::string filename_;
