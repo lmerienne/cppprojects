@@ -10,6 +10,7 @@
 
 namespace rm
 {
+    
     class Resource
     {
     public:
